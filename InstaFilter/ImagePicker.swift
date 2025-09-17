@@ -8,6 +8,7 @@
 import Foundation
 import PhotosUI
 import SwiftUI
+import UIKit
 
 struct ImagePicker: UIViewControllerRepresentable{
     
@@ -53,5 +54,15 @@ struct ImagePicker: UIViewControllerRepresentable{
     // thiis communicates bw UIKit and SiftUI
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
+    }
+}
+
+class ImageSaver: NSObject{
+    func writeToPhotoAlbum(image: UIImage){
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
+    }
+    
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError: Error?, contextInfo: UnsafeRawPointer) {
+        print("Finished Saving!")
     }
 }

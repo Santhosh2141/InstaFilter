@@ -63,6 +63,13 @@ struct CoreImageView: View {
             Button("Leave a review") {
                 requestReview()
             }
+            Button("Save image"){
+                guard let inputImage = inputImage else {
+                    return
+                }
+                let imageSaver = ImageSaver()
+                imageSaver.writeToPhotoAlbum(image: inputImage)
+            }
         }
 //        .onAppear(perform: loadImg)
         .sheet(isPresented: $showingImage){
@@ -130,6 +137,10 @@ struct CoreImageView: View {
             return
         }
         image = Image(uiImage: inputImage)
+        // this tells what methods to call when saving is complete
+        // 1st is image, 2nd(NSObject class) is object, 3rd is method(name) in the obj, 4th is anything and passed back when method is called in the obj
+        
+        
     }
 }
 

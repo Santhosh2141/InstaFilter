@@ -54,6 +54,14 @@ struct ContentView: View {
                 } label: {
                     Text("Go To CoreImageView")
                 }
+                
+                Spacer()
+                
+                NavigationLink{
+                    InstaFilterView()
+                } label: {
+                    Text("Go To InstaFilterView")
+                }
             }
             .padding()
         }
