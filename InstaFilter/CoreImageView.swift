@@ -9,7 +9,8 @@ import CoreImage
 import PhotosUI
 import CoreImage.CIFilterBuiltins
 import SwiftUI
-
+// for leaving app review
+import StoreKit
 
 // UIKit has a parentView called UIVIew
 // it also has UIViewCOntroller to bring all work to bring funcs to life.
@@ -20,6 +21,7 @@ struct CoreImageView: View {
     @State private var showingImage = false
     @State private var pickerItem: PhotosPickerItem?
     @State private var selectedImage: Image?
+    @Environment(\.requestReview) var requestReview
     // SwiftUI gives 3 image views
 //    We can create a UIImage from a CGImage, and create a CGImage from a UIImage.
 //    We can create a CIImage from a UIImage and from a CGImage, and can create a CGImage from a CIImage.
@@ -55,6 +57,11 @@ struct CoreImageView: View {
             }
             ShareLink(item: example, preview: SharePreview("MS Dhoni", image: example)) {
                 Label("Click to share", systemImage: "figure.cricket")
+            }
+            // it works. but its not ideal to let user to dictate.
+            // so its better to call this after a time frame like after doing some action many times.
+            Button("Leave a review") {
+                requestReview()
             }
         }
 //        .onAppear(perform: loadImg)
