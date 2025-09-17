@@ -21,34 +21,42 @@ struct ContentView: View {
     @State private var showingConfirm = false
     @State private var backgroundColor = Color.white
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-                .blur(radius: blurAmount)
-            Slider(value: $blurAmount, in: 0...20)
-                .onChange(of: blurAmount){ newValue in
-                    print("New value is \(newValue)")
+        NavigationStack{
+            VStack {
+                Image(systemName: "globe")
+                    .imageScale(.large)
+                    .foregroundColor(.accentColor)
+                Text("Hello, world!")
+                    .blur(radius: blurAmount)
+                Slider(value: $blurAmount, in: 0...20)
+                    .onChange(of: blurAmount){ newValue in
+                        print("New value is \(newValue)")
+                    }
+                Button("Random Blur"){
+                    blurAmount = Double.random(in: 0...20)
                 }
-            Button("Random Blur"){
-                blurAmount = Double.random(in: 0...20)
+                Button("Show Confirmation"){
+                    showingConfirm.toggle()
+                }
+                .frame(width: 500, height: 500)
+                .background(backgroundColor)
+                .confirmationDialog("Change background", isPresented: $showingConfirm) {
+                    Button("Red") { backgroundColor = .red }
+                    Button("Green") { backgroundColor = .green }
+                    Button("Blue") { backgroundColor = .blue }
+                    Button("Cancel", role: .cancel) { }
+                } message: {
+                    Text("Select a new color")
+                }
+                
+                NavigationLink{
+                    CoreImageView()
+                } label: {
+                    Text("Go To CoreImageView")
+                }
             }
-            Button("Show Confirmation"){
-                showingConfirm.toggle()
-            }
-            .frame(width: 500, height: 500)
-            .background(backgroundColor)
-            .confirmationDialog("Change background", isPresented: $showingConfirm) {
-                Button("Red") { backgroundColor = .red }
-                Button("Green") { backgroundColor = .green }
-                Button("Blue") { backgroundColor = .blue }
-                Button("Cancel", role: .cancel) { }
-            } message: {
-                Text("Select a new color")
-            }
+            .padding()
         }
-        .padding()
     }
 }
 
