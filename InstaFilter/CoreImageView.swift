@@ -10,8 +10,16 @@ import PhotosUI
 import CoreImage.CIFilterBuiltins
 import SwiftUI
 
+
+// UIKit has a parentView called UIVIew
+// it also has UIViewCOntroller to bring all work to bring funcs to life.
+// it also has delegation to decide what happens when smth is clicked elsewhere
 struct CoreImageView: View {
     @State private var image: Image?
+    @State private var inputImage: UIImage?
+    @State private var showingImage = false
+    @State private var pickerItem: PhotosPickerItem?
+    @State private var selectedImage: Image?
     // SwiftUI gives 3 image views
 //    We can create a UIImage from a CGImage, and create a CGImage from a UIImage.
 //    We can create a CIImage from a UIImage and from a CGImage, and can create a CGImage from a CIImage.
@@ -31,8 +39,27 @@ struct CoreImageView: View {
 //                }
 //                .buttonStyle(.borderedProminent)
 //            }
+            
+            Button("Select Image"){
+                showingImage = true
+            }
+//            PhotosPicker("Select a picture", selection: $pickerItem, matching: .images)
+//            selectedImage?
+//                .resizable()
+//                .scaledToFit()
         }
-        .onAppear(perform: loadImg)
+//        .onAppear(perform: loadImg)
+        .sheet(isPresented: $showingImage){
+            ImagePicker(image: $inputImage)
+        }
+        .onChange(of: inputImage){ _ in
+            loadImg1()
+        }
+//        .onChange(of: pickerItem){
+//            Task{
+//                selectedImage = try await pickerItem?.loadTransferable(type: Image.self)
+//            }
+//        }
     }
     
     func loadImg(){
@@ -79,6 +106,14 @@ struct CoreImageView: View {
 
         // and convert that to a SwiftUI image
         image = Image(uiImage: uiImage)
+    }
+    func loadImg1(){
+        // CGImage, CIImage and UIImage cant be used in a view
+//        image = Image("FtfYJsJaMAAxaSC")
+        guard let inputImage = inputImage else {
+            return
+        }
+        image = Image(uiImage: inputImage)
     }
 }
 
