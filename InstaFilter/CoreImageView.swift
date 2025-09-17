@@ -25,6 +25,7 @@ struct CoreImageView: View {
 //    We can create a CIImage from a UIImage and from a CGImage, and can create a CGImage from a CIImage.
 //    We can create a SwiftUI Image from both a UIImage and a CGImage.
     var body: some View {
+        let example = Image("FtfYJsJaMAAxaSC")
         VStack{
             image?
                 .resizable()
@@ -47,6 +48,14 @@ struct CoreImageView: View {
 //            selectedImage?
 //                .resizable()
 //                .scaledToFit()
+            
+//            ShareLink(item: URL(string: "https://www.hackingwithswift.com")! ,subject: Text("Learn Swift"), message: Text("Learn 100 days of SwiftUI"))
+            ShareLink(item: URL(string: "https://www.hackingwithswift.com")!) {
+                Label("Spread the word about Swift", systemImage: "swift")
+            }
+            ShareLink(item: example, preview: SharePreview("MS Dhoni", image: example)) {
+                Label("Click to share", systemImage: "figure.cricket")
+            }
         }
 //        .onAppear(perform: loadImg)
         .sheet(isPresented: $showingImage){
