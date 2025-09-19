@@ -45,9 +45,9 @@ struct InstaFilterView: View {
             }
             .padding([.horizontal, .bottom])
             .navigationTitle("InstaFilter")
-//            .onChange(of: inputImage){ _ in
-//                loadImage()
-//            }
+            .onChange(of: inputImage){ _ in
+                loadImage()
+            }
             .sheet(isPresented: $showingImagePicker){
                 ImagePicker(image: $inputImage)
             }
@@ -56,6 +56,13 @@ struct InstaFilterView: View {
     
     func save(){
         
+    }
+    
+    
+    func loadImage(){
+        guard let inputImage = inputImage else { return }
+        
+        image = Image(uiImage: inputImage)
     }
 }
 
