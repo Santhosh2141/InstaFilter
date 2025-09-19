@@ -11,6 +11,7 @@ import SwiftUI
 struct InstaFilterView: View {
     @State private var image: Image?
     @State private var inputImage: UIImage?
+    @State private var originalCIImage: CIImage?
     @State private var filterIntensity = 0.5
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
@@ -37,7 +38,7 @@ struct InstaFilterView: View {
                 
                 HStack{
                     Text("Intensity")
-                    Slider(value: $filterIntensity)
+                    Slider(value: $filterIntensity, in: 0...5)
                         .onChange(of: filterIntensity){ _ in
                             applyFilter()
                         }
@@ -62,9 +63,14 @@ struct InstaFilterView: View {
                 ImagePicker(image: $inputImage)
             }
             .confirmationDialog("Select Filter", isPresented: $showingFilterSheet){
-                Button{
-                    
-                }
+                Button("Crystallize"){setFilter(CIFilter.crystallize())}
+                Button("Edges"){setFilter(CIFilter.edges())}
+                Button("Gaussian Blur"){setFilter(CIFilter.gaussianBlur())}
+                Button("Pixelate"){setFilter(CIFilter.pixellate())}
+                Button("Sepia Tone"){setFilter(CIFilter.sepiaTone())}
+                Button("UnSharp Mark"){setFilter(CIFilter.unsharpMask())}
+                Button("Vignette"){setFilter(CIFilter.vignette())}
+                Button("Cancel", role: .cancel){}
             }
         }
     }
@@ -82,7 +88,18 @@ struct InstaFilterView: View {
     
     func applyFilter(){
 //        currentFilter.intensity = Float(filterIntensity)
-        currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey)
+        let inputKey = currentFilter.inputKeys
+        if inputKey.contains(kCIInputIntensityKey){
+            currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey)
+        } else if inputKey.contains(kCIInputRadiusKey){
+            currentFilter.setValue(filterIntensity*200, forKey: kCIInputRadiusKey)
+        } else if inputKey.contains(kCIInputScaleKey){
+            currentFilter.setValue(filterIntensity*10, forKey: kCIInputScaleKey)
+        } else if inputKey.contains(kCIInputCenterKey), let originalCIImage = originalCIImage {
+            let center = CIVector(x: originalCIImage.extent.midX, y: originalCIImage.extent.midY)
+            currentFilter.setValue(center, forKey: kCIInputCenterKey)
+        }
+        
         guard let outputImage = currentFilter.outputImage else {
             return
         }
@@ -93,6 +110,11 @@ struct InstaFilterView: View {
 
         // and convert that to a SwiftUI image
         image = Image(uiImage: uiImage)
+    }
+    
+    func setFilter(_ filter: CIFilter){
+        currentFilter = filter
+        loadImage()
     }
     func saveImage(){
         
