@@ -46,10 +46,13 @@ struct CoreImageView: View {
             Button("Select Image"){
                 showingImage = true
             }
-//            PhotosPicker("Select a picture", selection: $pickerItem)
-//            selectedImage?
-//                .resizable()
-//                .scaledToFit()
+            PhotosPicker("Select a picture", selection: $pickerItem)
+            selectedImage?
+                .resizable()
+                .scaledToFit()
+                .onChange(of: pickerItem) { _ in
+                    loadImage()
+                }
 //
 //            ShareLink(item: URL(string: "https://www.hackingwithswift.com")! ,subject: Text("Learn Swift"), message: Text("Learn 100 days of SwiftUI"))
             ShareLink(item: URL(string: "https://www.hackingwithswift.com")!) {
@@ -141,6 +144,15 @@ struct CoreImageView: View {
         // 1st is image, 2nd(NSObject class) is object, 3rd is method(name) in the obj, 4th is anything and passed back when method is called in the obj
         
         
+    }
+    
+    func loadImage() {
+        Task {
+            guard let imageData = try await pickerItem?.loadTransferable(type: Data.self) else { return }
+            guard let inputImage = UIImage(data: imageData) else { return }
+
+            // more code to come
+        }
     }
 }
 
