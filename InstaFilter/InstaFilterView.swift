@@ -7,6 +7,7 @@
 import CoreImage
 import CoreImage.CIFilterBuiltins
 import SwiftUI
+import StoreKit
 
 struct InstaFilterView: View {
     @State private var image: Image?
@@ -15,6 +16,8 @@ struct InstaFilterView: View {
     @State private var filterIntensity = 0.5
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
+    @AppStorage("filterCount") var filterCount = 0
+    @Environment(\.requestReview) var requestReview
     let context = CIContext()
     // if we dont define it as CIFilter then its not possible to update it as it conforms to CIFilter and CISepiaTone
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
@@ -23,9 +26,9 @@ struct InstaFilterView: View {
             VStack{
                 ZStack{
                     Rectangle()
-                        .fill(.gray)
+                        .fill(.thinMaterial)
                     Text("Tap to select a picture")
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                         .font(.headline)
                     image?
                         .resizable()
@@ -51,7 +54,14 @@ struct InstaFilterView: View {
                     }
                     Spacer()
                     
+                    if let image{
+                        ShareLink(item: image, preview: SharePreview("Insta Filter Image", image: image)){
+                            Label("Share Image", systemImage: "square.and.arrow.up")
+                        }
+                        Spacer()
+                    }
                     Button("Save", action: save)
+                    
                 }
             }
             .padding([.horizontal, .bottom])
@@ -112,9 +122,15 @@ struct InstaFilterView: View {
         image = Image(uiImage: uiImage)
     }
     
-    func setFilter(_ filter: CIFilter){
+    @MainActor func setFilter(_ filter: CIFilter){
         currentFilter = filter
         loadImage()
+        
+        filterCount += 1
+        if filterCount >= 20 {
+            requestReview()
+            // this will throw an error as we need to call requestReview on the Main acotr which is the main function
+        }
     }
     func saveImage(){
         
