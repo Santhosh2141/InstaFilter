@@ -46,11 +46,11 @@ struct CoreImageView: View {
             Button("Select Image"){
                 showingImage = true
             }
-//            PhotosPicker("Select a picture", selection: $pickerItem, matching: .images)
+//            PhotosPicker("Select a picture", selection: $pickerItem)
 //            selectedImage?
 //                .resizable()
 //                .scaledToFit()
-            
+//
 //            ShareLink(item: URL(string: "https://www.hackingwithswift.com")! ,subject: Text("Learn Swift"), message: Text("Learn 100 days of SwiftUI"))
             ShareLink(item: URL(string: "https://www.hackingwithswift.com")!) {
                 Label("Spread the word about Swift", systemImage: "swift")
