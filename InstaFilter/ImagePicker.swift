@@ -58,11 +58,20 @@ struct ImagePicker: UIViewControllerRepresentable{
 }
 
 class ImageSaver: NSObject{
+    
+    var successHandler: (() -> Void)?
+    var errorHandler: ((Error) -> Void)?
+    
     func writeToPhotoAlbum(image: UIImage){
         UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
     }
     
-    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError: Error?, contextInfo: UnsafeRawPointer) {
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         print("Finished Saving!")
+        if let error {
+            errorHandler?(error)
+        } else {
+            successHandler?()
+        }
     }
 }
